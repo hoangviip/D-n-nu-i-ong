@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Bee War Tycoon</title>
+    <style>
+        :root { --primary: #f1c40f; --secondary: #e67e22; --danger: #e74c3c; }
+        body { font-family: sans-serif; background: #333; color: white; margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .game-container { width: 100%; max-width: 450px; background: #444; border-radius: 20px; padding: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .stats-grid { display: grid; grid-template-columns: 1-fr 1fr; gap: 10px; background: #222; padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+        .stat-item { font-size: 0.9rem; color: #aaa; }
+        .stat-value { font-size: 1.1rem; color: var(--primary); font-weight: bold; display: block; }
+        
+        /* Combat Box */
+        #battle-zone { display: none; background: #c0392b; padding: 15px; border-radius: 10px; margin: 10px 0; border: 2px solid white; animation: shake 0.5s infinite; }
+        @keyframes shake { 0% { transform: translate(1px, 1px); } 50% { transform: translate(-1px, -2px); } 100% { transform: translate(1px, 1px); } }
+        
+        button { width: 100%; padding: 15px; margin: 5px 0; border: none; border-radius: 10px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s; }
+        .btn-main { background: var(--primary); color: #333; }
+        .btn-upgrade { background: var(--secondary); color: white; }
+        .btn-attack { background: white; color: var(--danger); font-size: 1.2rem; }
+        button:disabled { filter: grayscale(1); opacity: 0.5; }
+
+        .code-section { margin-top: 20px; border-top: 1px solid #555; padding-top: 10px; }
+        input { width: 70%; padding: 10px; border-radius: 5px; border: none; }
+        .btn-code { width: 25%; padding: 10px; display: inline-block; }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h2 style="text-align:center; color: var(--primary);">🐝 BEE WAR IDLE</h2>
+
+    <div id="battle-zone">
+        <div style="font-weight:bold; margin-bottom:10px;">⚠️ CẢNH BÁO: KẺ TRỘM ĐANG ĐẾN!</div>
+        <button class="btn-attack" onclick="attackHuman()">TẤN CÔNG (Ong x10)</button>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-item">Mật ong: <span id="honey" class="stat-value">0</span></div>
+        <div class="stat-item">Tiền vàng: <span id="money" class="stat-value">0</span></div>
+        <div class="stat-item">Đàn ong: <span id="bees" class="stat-value">0</span></div>
+        <div class="stat-item">Sức mạnh: <span id="power" class="stat-value">1</span></div>
+    </div>
+
+    <button class="btn-main" onclick="collect()">Thu thập mật</button>
+    <button class="btn-main" style="background:#27ae60" onclick="sell()">Bán toàn bộ mật</button>
+
+    <div style="margin-top:20px;">
+        <button class="btn-upgrade" id="btnBee" onclick="buyBee()">Mua thêm ong (10$)</button>
+        <button class="btn-upgrade" id="btnPower" onclick="upgradePower()">Luyện tập ong (50$)</button>
+    </div>
+
+    <div class="code-section">
+        <input type="text" id="codeInput" placeholder="Nhập mã code...">
+        <button class="btn-code" onclick="redeemCode()">OK</button>
+    </div>
+    
+    <button style="background:#555; font-size:0.8rem; margin-top:20px;" onclick="save()">Lưu Game</button>
+</div>
+
+<script>
+    let game = {
+        honey: 0, money: 0, bees: 0, power: 1, 
+        beeCost: 10, powerCost: 50, specialBee: false
+    };
+
+    function updateUI() {
+        document.getElementById('honey').innerText = Math.floor(game.honey);
+        document.getElementById('money').innerText = Math.floor(game.money);
+        document.getElementById('bees').innerText = game.bees + (game.specialBee ? " (+Chúa)" : "");
+        document.getElementById('power').innerText = game.power;
+        
+        document.getElementById('btnBee').innerText = `Mua thêm ong (${game.beeCost}$)`;
+        document.getElementById('btnPower').innerText = `Luyện tập (${game.powerCost}$)`;
+        
+        document.getElementById('btnBee').disabled = game.money < game.beeCost;
+        document.getElementById('btnPower').disabled = game.money < game.powerCost;
+    }
+
+    function collect() { game.honey += 1 + (game.power * 0.1); updateUI(); }
+    function sell() { game.money += game.honey * 2; game.honey = 0; updateUI(); }
+    
+    function buyBee() {
+        if(game.money >= game.beeCost) {
+            game.money -= game.beeCost;
+            game.bees++;
+            game.beeCost = Math.floor(game.beeCost * 1.3);
+            updateUI();
+        }
+    }
+
+    function upgradePower() {
+        if(game.money >= game.powerCost) {
+            game.money -= game.powerCost;
+            game.power++;
+            game.powerCost *= 2;
+            updateUI();
+        }
+    }
+
+    // CHIẾN ĐẤU
+    function attackHuman() {
+        let reward = game.bees * game.power * 5;
+        game.money += reward;
+        document.getElementById('battle-zone').style.display = 'none';
+        alert("Bạn đã đuổi được con người và thu về " + reward + "$!");
+        updateUI();
+    }
+
+    function redeemCode() {
+        let code = document.getElementById('codeInput').value;
+        if(code === "bii" && !game.specialBee) {
+            game.specialBee = true;
+            game.power += 50;
+            game.bees += 10;
+            alert("Code thành công! Nhận Ong Chúa: +50 Sức mạnh, +10 Ong.");
+            updateUI();
+        } else {
+            alert("Mã sai hoặc đã sử dụng!");
+        }
+    }
+
+    // Vòng lặp chính
+    setInterval(() => {
+        // Tự sản xuất mật
+        game.honey += (game.bees * (game.power * 0.5)) / 10;
+
+        // 10% xuất hiện kẻ trộm mỗi 3 giây (kiểm tra xác suất)
+        if(Math.random() < 0.1 && game.bees > 0) {
+            document.getElementById('battle-zone').style.display = 'block';
+        }
+        updateUI();
+    }, 1000);
+
+    function save() { localStorage.setItem("bee_save", JSON.stringify(game)); alert("Đã lưu!"); }
+    window.onload = () => {
+        let saved = JSON.parse(localStorage.getItem("bee_save"));
+        if(saved) game = saved;
+        updateUI();
+    }
+</script>
+
+</body>
+  </html>
