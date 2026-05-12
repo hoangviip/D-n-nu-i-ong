@@ -3,119 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bee War Tycoon v1.4</title>
+    <title>Bee War Tycoon v1.4.1 - Fixed</title>
     <style>
         :root {
-            --honey-main: #f39c12;
-            --honey-light: #f1c40f;
-            --honey-dark: #d35400;
-            --bg-dark: #2c1e0a;
-            --card-bg: #4a2f0f;
-            --danger: #e74c3c;
-            --success: #2ecc71;
-            --dragon: #9b59b6;
+            --honey-main: #f39c12; --honey-light: #f1c40f; --honey-dark: #d35400;
+            --bg-dark: #2c1e0a; --card-bg: #4a2f0f; --danger: #e74c3c; --success: #2ecc71; --dragon: #9b59b6;
         }
-
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg-dark); color: #fff3e0; margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .game-container { width: 100%; max-width: 480px; background: var(--card-bg); border-radius: 20px; padding: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.8); position: relative; border: 2px solid var(--honey-main); }
-        .version-tag { position: absolute; top: 10px; right: 10px; font-size: 0.7rem; color: #f1c40f; background: rgba(0,0,0,0.5); padding: 3px 10px; border-radius: 10px; border: 1px solid var(--honey-main); }
-
-        .header h2 { color: var(--honey-light); margin: 10px 0; text-shadow: 0 2px 4px rgba(0,0,0,0.8); text-align: center; }
-
-        #event-log { background: #1a1005; padding: 10px; border-radius: 10px; margin-bottom: 10px; font-size: 0.85rem; border: 1px solid var(--honey-dark); color: var(--honey-light); height: 50px; overflow-y: auto; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
-
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; margin-bottom: 10px; border: 1px solid rgba(243, 156, 18, 0.3); }
-        .stat-item { font-size: 0.85rem; color: #e0ca9e; }
-        .stat-value { font-size: 1.25rem; color: var(--honey-light); font-weight: bold; display: block; text-shadow: 1px 1px 2px #000; }
-        .bee-list { font-size: 0.85rem; text-align: left; margin-bottom: 10px; color: #ffd180; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; }
-
-        #battle-zone { display: none; background: linear-gradient(45deg, #c0392b, #8e44ad); padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: center; border: 2px solid #fff; animation: pulse 1s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
-
-        /* Inventory & Adventure */
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg-dark); color: #fff3e0; margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .game-container { width: 100%; max-width: 480px; background: var(--card-bg); border-radius: 20px; padding: 15px; border: 2px solid var(--honey-main); position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .version-tag { position: absolute; top: 10px; right: 10px; font-size: 0.7rem; color: #f1c40f; background: rgba(0,0,0,0.5); padding: 2px 8px; border-radius: 10px; }
+        #event-log { background: #1a1005; padding: 10px; border-radius: 10px; margin: 10px 0; font-size: 0.8rem; border: 1px solid var(--honey-dark); color: var(--honey-light); height: 60px; overflow-y: auto; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; background: rgba(0,0,0,0.3); padding: 12px; border-radius: 15px; margin-bottom: 10px; }
+        .stat-value { font-size: 1.2rem; color: var(--honey-light); font-weight: bold; display: block; }
+        .bee-list { font-size: 0.8rem; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 10px; color: #ffd180; }
+        #battle-zone { display: none; background: linear-gradient(45deg, #c0392b, #e67e22); padding: 15px; border-radius: 15px; margin-bottom: 10px; text-align: center; border: 2px solid white; }
         .inventory-box { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 10px; margin-bottom: 10px; border: 1px dashed var(--honey-main); font-size: 0.8rem; }
-        .inv-item { display: inline-block; margin: 3px; background: #333; padding: 3px 8px; border-radius: 5px; cursor: pointer; border: 1px solid #555; }
-        .inv-item:hover { background: var(--honey-dark); }
-
-        button { width: 100%; padding: 14px; margin: 5px 0; border: none; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: all 0.2s; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); }
+        .inv-item { display: inline-block; margin: 2px; background: #333; padding: 4px 8px; border-radius: 5px; cursor: pointer; border: 1px solid #555; }
+        button { width: 100%; padding: 14px; margin: 4px 0; border: none; border-radius: 12px; font-weight: bold; font-size: 1rem; cursor: pointer; transition: 0.2s; color: white; }
         button:active { transform: translateY(2px); }
-        button:disabled { filter: grayscale(1); opacity: 0.6; cursor: not-allowed; }
-
-        .btn-collect { background: linear-gradient(to bottom, var(--honey-light), var(--honey-main)); color: #3d2304; position: relative; overflow: hidden; }
-        .btn-sell { background: var(--success); color: white; }
-        .btn-random { background: #3498db; color: white; }
-        .btn-attack { background: white; color: var(--danger); text-shadow: none; }
-        .btn-invade { background: #e67e22; color: white; display: none; }
-        .btn-dragon { background: var(--dragon); color: white; display: none; }
-        .btn-adventure { background: #27ae60; color: white; display: none; }
-        .btn-pvp { background: linear-gradient(45deg, #ff0000, #0000ff); color: white; display: none; }
-
+        button:disabled { opacity: 0.5; cursor: not-allowed; filter: grayscale(1); }
+        .btn-collect { background: linear-gradient(var(--honey-light), var(--honey-main)); color: #3d2304; position: relative; overflow: hidden; }
+        .btn-sell { background: var(--success); }
+        .btn-random { background: #3498db; }
+        .btn-invade { background: #e67e22; display: none; }
+        .btn-adventure { background: #27ae60; display: none; }
+        .btn-dragon { background: var(--dragon); display: none; }
+        .btn-pvp { background: linear-gradient(45deg, #ff0000, #0000ff); display: none; }
         .cooldown-bar { position: absolute; bottom: 0; left: 0; height: 5px; background: rgba(0,0,0,0.5); width: 0%; }
-
-        #random-display { height: 40px; font-size: 1.1rem; font-weight: bold; color: var(--honey-light); margin: 10px 0; display: flex; align-items: center; justify-content: center; border: 1px dashed var(--honey-main); border-radius: 10px; background: rgba(0,0,0,0.2); }
-        
-        .code-section { margin-top: 15px; display: flex; gap: 5px; }
-        .code-section input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--honey-dark); background: #2c1e0a; color: white; }
-        .btn-code { width: auto; padding: 12px 20px; margin: 0; background: var(--honey-dark); }
+        .code-section { margin-top: 10px; display: flex; gap: 5px; }
+        input { flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--honey-dark); background: #1a1005; color: white; }
     </style>
 </head>
 <body>
 
 <div class="game-container">
-    <div class="version-tag">v1.4 - Kỷ Nguyên Rồng</div>
-    <div class="header"><h2>🍯 BEE WAR TYCOON</h2></div>
+    <div class="version-tag">v1.4.1 (Fixed)</div>
+    <h2 style="text-align:center; color: var(--honey-light); margin: 5px;">🍯 BEE WAR TYCOON</h2>
 
-    <div id="event-log">Hệ thống: Chào mừng đến với Kỷ Nguyên Mật Ong!</div>
+    <div id="event-log">Hệ thống: Nhập code "denbu" để lấy lại đồ đã mất!</div>
 
     <div id="battle-zone">
-        <div id="battle-msg" style="font-weight:bold; margin-bottom:10px;">⚠️ CON NGƯỜI ĐANG TRỘM MẬT!</div>
-        <button class="btn-attack" id="attackBtn" onclick="fightHuman()">PHẢN CÔNG (30% thắng)</button>
-        <div id="battle-timer" style="font-size: 0.9rem; margin-top: 5px;"></div>
+        <div style="font-weight:bold; margin-bottom:5px;">⚠️ TRỘM ĐANG PHÁ TỔ!</div>
+        <button style="background:white; color:red;" id="attackBtn" onclick="fightHuman()">PHẢN CÔNG (4s)</button>
+        <div id="battle-timer" style="font-size: 0.8rem; margin-top: 5px;"></div>
     </div>
 
     <div class="stats-grid">
-        <div class="stat-item">Mật ong<span id="honey" class="stat-value">0</span></div>
-        <div class="stat-item">Tiền vàng<span id="money" class="stat-value">0</span></div>
-        <div class="stat-item">Tổng số ong<span id="totalBees" class="stat-value">0</span></div>
-        <div class="stat-item">Sản lượng/s<span id="hps" class="stat-value">0</span></div>
+        <div>Mật ong <span id="honey" class="stat-value">0</span></div>
+        <div>Tiền vàng <span id="money" class="stat-value">0</span></div>
+        <div>Đàn ong <span id="totalBees" class="stat-value">0</span></div>
+        <div>Sản lượng/s <span id="hps" class="stat-value">0</span></div>
     </div>
 
-    <div class="bee-list" id="beeDetails">
-        Thợ: 0 | Chiến: 0 | Chúa: 0 | Bully: 0 | 🐉 RỒNG: 0
-    </div>
+    <div class="bee-list" id="beeDetails">Thợ: 0 | Chiến: 0 | Chúa: 0 | Bully: 0 | 🐉 RỒNG: 0</div>
 
     <div class="inventory-box" id="inventoryZone" style="display:none;">
-        <strong style="color:var(--honey-light);">Túi đồ phiêu lưu (Tỷ lệ xâm chiếm: <span id="winRateTxt">40</span>%)</strong><br>
-        <div class="inv-item" onclick="useItem('stone')">Cát đá (<span id="it-stone">0</span>) [+1%]</div>
-        <div class="inv-item" onclick="useItem('lemon')">Chanh (<span id="it-lemon">0</span>) [+2%]</div>
-        <div class="inv-item" onclick="useItem('bran')">Cám (<span id="it-bran">0</span>) [+3%]</div>
-        <div class="inv-item" onclick="useItem('cake')">Bánh (<span id="it-cake">0</span>) [+5%]</div>
+        <strong>Túi đồ (Buff thắng: +<span id="winRateTxt">0</span>%)</strong><br>
+        <div class="inv-item" onclick="useItem('stone')">Cát đá (+1%) <span id="it-stone">0</span></div>
+        <div class="inv-item" onclick="useItem('lemon')">Chanh (+2%) <span id="it-lemon">0</span></div>
+        <div class="inv-item" onclick="useItem('bran')">Cám (+3%) <span id="it-bran">0</span></div>
+        <div class="inv-item" onclick="useItem('cake')">Bánh (+5%) <span id="it-cake">0</span></div>
     </div>
 
-    <button class="btn-collect" id="collectBtn" onclick="startCollecting()">ĐI LẤY MẬT (Chờ 3s)<div class="cooldown-bar" id="cdBar"></div></button>
-    <button class="btn-sell" onclick="sellHoney()">BÁN MẬT (-30% Lạm phát)</button>
+    <button class="btn-collect" id="collectBtn" onclick="startCollecting()">ĐI LẤY MẬT (3s)<div class="cooldown-bar" id="cdBar"></div></button>
+    <button class="btn-sell" id="sellBtn" onclick="sellHoney()">BÁN MẬT (-30% lạm phát)</button>
     
     <div style="display:flex; gap:5px;">
-        <button class="btn-invade" id="invadeBtn" onclick="invadeOtherNest()">XÂM CHIẾM Tổ Khác</button>
-        <button class="btn-adventure" id="adventureBtn" onclick="dragonAdventure()">CƯỠI RỒNG PHIÊU LƯU</button>
+        <button class="btn-invade" id="invadeBtn" onclick="invadeOtherNest()">XÂM CHIẾM TỔ</button>
+        <button class="btn-adventure" id="adventureBtn" onclick="dragonAdventure()">CƯỠI RỒNG (10s)</button>
     </div>
 
-    <button class="btn-dragon" id="evolveBtn" onclick="evolveDragon()">TIẾN HÓA RỒNG ONG (Cần 2 Chúa) - 5s</button>
+    <button class="btn-dragon" id="evolveBtn" onclick="evolveDragon()">TIẾN HÓA RỒNG (5s - Cần 2 Chúa)</button>
     <button class="btn-pvp" id="pvpBtn" onclick="startPvP()">ĐẤU TRƯỜNG SOLO (Cần 3 Chúa)</button>
-    
-    <button style="background:#c0392b; color:white; font-size:0.8rem; padding:8px; margin-top:5px;" onclick="provokeHuman()">🤬 GỌI NGƯỜI ĐẾN PHÁ (Thử thách)</button>
 
-    <div id="random-display">Sẵn sàng quay ong...</div>
-    <button class="btn-random" id="randomBtn" onclick="rollBee()">RANDOM ONG (Giá: <span id="rollCost">1000</span>$)</button>
+    <div style="text-align:center; margin-top:10px;"><button style="background:#5d4037; font-size:0.8rem; width:auto; padding:5px 15px;" onclick="provokeHuman()">🤬 GỌI NGƯỜI ĐẾN PHÁ</button></div>
+
+    <div id="random-display" style="text-align:center; padding:10px; font-weight:bold; color:var(--honey-light);">Sẵn sàng...</div>
+    <button class="btn-random" id="randomBtn" onclick="rollBee()">RANDOM (Giá: <span id="rollCost">1000</span>$)</button>
 
     <div class="code-section">
-        <input type="text" id="codeInput" placeholder="Nhập mã code...">
-        <button class="btn-code" onclick="redeemCode()">Nhập</button>
+        <input type="text" id="codeInput" placeholder="Nhập mã...">
+        <button style="background:var(--honey-dark); width:auto; padding:0 15px;" onclick="redeemCode()">OK</button>
     </div>
     
     <div style="display:flex; gap:5px; margin-top:10px;">
-        <button style="background:#555; font-size:0.8rem; padding:10px;" onclick="saveGame()">💾 Lưu Game</button>
-        <button style="background:#555; font-size:0.8rem; padding:10px;" onclick="resetGame()">🗑️ Xóa chơi lại</button>
+        <button style="background:#555; font-size:0.7rem;" onclick="saveGame()">💾 Lưu</button>
+        <button style="background:#555; font-size:0.7rem;" onclick="resetGame()">🗑️ Xóa</button>
     </div>
 </div>
 
@@ -124,260 +97,221 @@
         honey: 0, money: 0, rollCost: 1000,
         bees: { worker: 0, fighter: 0, queen: 0, bully: 0, dragon: 0 },
         items: { stone: 0, lemon: 0, bran: 0, cake: 0 },
-        bonusInvasionRate: 0, evolveFails: 0,
-        isCollecting: false, humanAttacking: false, isFighting: false, isBusy: false
+        bonusWin: 0, failCount: 0,
+        isBusy: false, humanAttacking: false
     };
 
     const BEE_TYPES = [
-        { name: "Ong Thợ", rate: 57, key: 'worker' },
-        { name: "Ong Chiến", rate: 20, key: 'fighter' },
-        { name: "Ong Chúa", rate: 13, key: 'queen' },
-        { name: "Ong Bully", rate: 10, key: 'bully' }
+        { n: "Ong Thợ", r: 57, k: 'worker' },
+        { n: "Ong Chiến", r: 20, k: 'fighter' },
+        { n: "Ong Chúa", r: 13, k: 'queen' },
+        { n: "Ong Bully", r: 10, k: 'bully' }
     ];
 
-    function logEvent(msg) {
-        const logBox = document.getElementById('event-log');
-        logBox.innerHTML = `> ${msg}<br>${logBox.innerHTML}`;
+    function log(msg) {
+        const el = document.getElementById('event-log');
+        el.innerHTML = `> ${msg}<br>${el.innerHTML}`;
     }
 
     function updateUI() {
         document.getElementById('honey').innerText = Math.floor(game.honey);
         document.getElementById('money').innerText = Math.floor(game.money);
-        document.getElementById('totalBees').innerText = game.bees.worker + game.bees.fighter + game.bees.queen + game.bees.bully + game.bees.dragon;
-        
-        let production = (game.bees.worker * 1 + game.bees.queen * 5 + game.bees.bully * 2 + game.bees.dragon * 30) * 0.7;
-        document.getElementById('hps').innerText = production.toFixed(1);
-
-        document.getElementById('beeDetails').innerText = `Thợ: ${game.bees.worker} | Chiến: ${game.bees.fighter} | Chúa: ${game.bees.queen} | Bully: ${game.bees.bully} | 🐉 RỒNG: ${game.bees.dragon}`;
         document.getElementById('rollCost').innerText = Math.floor(game.rollCost);
+        document.getElementById('totalBees').innerText = Object.values(game.bees).reduce((a, b) => a + b, 0);
         
-        // Túi đồ phiêu lưu
-        if(game.bees.dragon > 0 || game.bonusInvasionRate > 0) document.getElementById('inventoryZone').style.display = 'block';
-        document.getElementById('it-stone').innerText = game.items.stone;
-        document.getElementById('it-lemon').innerText = game.items.lemon;
-        document.getElementById('it-bran').innerText = game.items.bran;
-        document.getElementById('it-cake').innerText = game.items.cake;
+        let hps = (game.bees.worker * 1 + game.bees.queen * 5 + game.bees.bully * 2 + game.bees.dragon * 35) * 0.7;
+        document.getElementById('hps').innerText = hps.toFixed(1);
+        document.getElementById('beeDetails').innerText = `Thợ: ${game.bees.worker} | Chiến: ${game.bees.fighter} | Chúa: ${game.bees.queen} | Bully: ${game.bees.bully} | 🐉 RỒNG: ${game.bees.dragon}`;
         
-        let baseWinRate = 40 + (game.bees.dragon * 10);
-        let totalWinRate = Math.min(100, baseWinRate + game.bonusInvasionRate);
-        document.getElementById('winRateTxt').innerText = totalWinRate;
+        // Items
+        document.getElementById('inventoryZone').style.display = (game.bees.dragon > 0 || game.bonusWin > 0) ? 'block' : 'none';
+        ['stone','lemon','bran','cake'].forEach(i => document.getElementById(`it-${i}`).innerText = game.items[i]);
+        document.getElementById('winRateTxt').innerText = game.bonusWin;
 
-        // Hiện nút
-        document.getElementById('invadeBtn').style.display = game.bees.fighter >= 2 ? 'block' : 'none';
+        // Buttons
+        document.getElementById('invadeBtn').style.display = game.bees.fighter >= 2 ? 'inline-block' : 'none';
+        document.getElementById('adventureBtn').style.display = game.bees.dragon >= 1 ? 'inline-block' : 'none';
         document.getElementById('evolveBtn').style.display = game.bees.queen >= 2 ? 'block' : 'none';
-        document.getElementById('adventureBtn').style.display = game.bees.dragon >= 1 ? 'block' : 'none';
         document.getElementById('pvpBtn').style.display = game.bees.queen >= 3 ? 'block' : 'none';
 
-        // Khóa nút
-        let lockAll = game.isBusy || game.isFighting;
-        document.getElementById('randomBtn').disabled = game.money < game.rollCost || lockAll;
-        document.getElementById('collectBtn').disabled = game.isCollecting || lockAll;
-        document.getElementById('invadeBtn').disabled = lockAll;
-        document.getElementById('evolveBtn').disabled = lockAll;
-        document.getElementById('adventureBtn').disabled = lockAll;
-        document.getElementById('pvpBtn').disabled = lockAll;
+        const btns = document.querySelectorAll('button:not(.btn-code):not([onclick*="save"]):not([onclick*="reset"])');
+        btns.forEach(b => b.disabled = game.isBusy);
     }
 
     function startCollecting() {
-        if (game.isCollecting) return;
-        game.isCollecting = true;
+        if(game.isBusy) return;
+        game.isBusy = true;
         let bar = document.getElementById('cdBar');
-        bar.style.transition = "none"; bar.style.width = "0%";
+        bar.style.width = "0%";
         setTimeout(() => { bar.style.transition = "width 3s linear"; bar.style.width = "100%"; }, 10);
         
         setTimeout(() => {
-            let gain = 10 + (game.bees.worker * 2);
+            let gain = 10 + (game.bees.worker * 3);
             game.honey += gain;
-            game.isCollecting = false; bar.style.width = "0%";
-            logEvent(`Đã lấy được ${gain} mật.`);
+            game.isBusy = false; bar.style.transition = "none"; bar.style.width = "0%";
+            log(`Lấy được ${gain} mật.`);
             updateUI();
         }, 3000);
     }
 
     function sellHoney() {
-        let income = (game.honey * 0.5) * 0.7;
-        game.money += income; game.honey = 0;
-        logEvent(`Bán mật thu được ${Math.floor(income)}$.`);
+        let cash = (game.honey * 0.5) * 0.7;
+        game.money += cash; game.honey = 0;
+        log(`Bán mật nhận ${Math.floor(cash)}$.`);
         updateUI();
     }
 
     function rollBee() {
         if (game.money < game.rollCost) return;
-        game.money -= game.rollCost; game.rollCost *= 1.5;
-        let display = document.getElementById('random-display');
-        display.innerText = "Đang quay..."; game.isBusy = true; updateUI();
+        game.money -= game.rollCost; game.rollCost *= 1.4;
+        game.isBusy = true; updateUI();
+        let disp = document.getElementById('random-display');
+        disp.innerText = "Đang quay...";
         
         setTimeout(() => {
-            let rand = Math.random() * 100, cumulative = 0, selected = BEE_TYPES[0];
-            for (let b of BEE_TYPES) { cumulative += b.rate; if (rand <= cumulative) { selected = b; break; } }
-            game.bees[selected.key]++;
-            display.innerText = "Chúc mừng: " + selected.name + "!";
-            logEvent("Random ra: " + selected.name);
+            let r = Math.random() * 100, cur = 0, sel = BEE_TYPES[0];
+            for (let b of BEE_TYPES) { cur += b.r; if (r <= cur) { sel = b; break; } }
+            game.bees[sel.k]++;
+            disp.innerText = "Nhận được: " + sel.n;
+            log("Bạn nhận 1 " + sel.n);
             game.isBusy = false; updateUI();
-        }, 1000);
+        }, 800);
     }
 
-    function provokeHuman() {
-        if(!game.humanAttacking) {
-            game.humanAttacking = true;
-            document.getElementById('battle-zone').style.display = 'block';
-            logEvent("Bạn đã chọc giận con người! Bọn chúng đang tới!");
-        }
-    }
-
-    function fightHuman() {
-        if (!game.humanAttacking || game.isFighting) return;
-        game.isFighting = true; let timer = 4;
-        document.getElementById('attackBtn').disabled = true;
-        let cd = setInterval(() => {
-            document.getElementById('battle-timer').innerText = `Đang đấm nhau... ${timer}s`;
-            timer--;
-            if (timer < 0) {
-                clearInterval(cd); document.getElementById('attackBtn').disabled = false;
-                game.isFighting = false; document.getElementById('battle-timer').innerText = "";
-                let winRate = 0.3 + (game.bees.dragon > 0 ? 0.7 : 0);
-                if (Math.random() < winRate) {
-                    game.humanAttacking = false; game.money += (game.bees.fighter * 500 + 500);
-                    document.getElementById('battle-zone').style.display = 'none';
-                    logEvent("THẮNG CON NGƯỜI! Bọn chúng đã bỏ chạy.");
-                } else { logEvent("Bị con người đập tơi tả, vẫn đang mất mật!"); }
-                updateUI();
-            }
-        }, 1000);
-    }
-
-    // Tiến hóa Rồng (5s, hụt 3 lần mất rồng)
     function evolveDragon() {
-        if(game.bees.queen < 2) return;
+        if(game.bees.queen < 2 || game.isBusy) return;
         game.isBusy = true; updateUI();
-        logEvent("🔮 Đang vận nội công tiến hóa Rồng... (Chờ 5s)");
-        
+        log("🔮 Tiến hóa Rồng... (5 giây)");
         setTimeout(() => {
             game.isBusy = false;
-            if(Math.random() < 0.1) {
+            if(Math.random() < 0.12) {
                 game.bees.fighter = Math.max(0, game.bees.fighter - 1);
-                game.bees.dragon++; game.evolveFails = 0;
-                logEvent("🎉 HÓA RỒNG THÀNH CÔNG! Bầu trời tối sầm lại...");
+                game.bees.dragon++; game.failCount = 0;
+                log("🎉 THÀNH CÔNG! Hóa Rồng thành công.");
             } else {
-                game.evolveFails++;
-                logEvent(`❌ Tiến hóa xịt! (Tích lũy xịt: ${game.evolveFails}/3)`);
-                if(game.evolveFails >= 3) {
-                    game.evolveFails = 0;
-                    if(game.bees.dragon > 0) {
-                        game.bees.dragon--;
-                        logEvent("☠️ QUÁ TAM BA BẬN! Phản phệ khiến bạn MẤT 1 RỒNG ONG!");
-                    } else {
-                        logEvent("☠️ Phản phệ! Rất may bạn chưa có Rồng để mất.");
-                    }
+                game.failCount++;
+                log(`❌ Thất bại! (Hụt: ${game.failCount}/3)`);
+                if(game.failCount >= 3) {
+                    game.failCount = 0;
+                    if(game.bees.dragon > 0) { game.bees.dragon--; log("💀 MẤT 1 RỒNG do phản phệ!"); }
                 }
             }
             updateUI();
         }, 5000);
     }
 
-    // Phiêu lưu Rồng (10s)
     function dragonAdventure() {
-        if(game.bees.dragon < 1) return;
+        if(game.bees.dragon < 1 || game.isBusy) return;
         game.isBusy = true; updateUI();
-        logEvent("🐉 Rồng Ong đang bay đi phiêu lưu... (Chờ 10s)");
-        
+        log("🐉 Rồng bay đi tìm kho báu... (10 giây)");
         setTimeout(() => {
             game.isBusy = false;
             let r = Math.random();
-            if(r < 0.3) { logEvent("Rồng ngáp ruồi mang về Không Khí (Chả có gì)."); }
-            else if(r < 0.6) { game.items.stone++; logEvent("🎁 Rồng tha về Cát Đá (+1% Xâm chiếm)!"); }
-            else if(r < 0.8) { game.items.lemon++; logEvent("🎁 Rồng nhặt được Chanh (+2% Xâm chiếm)!"); }
-            else if(r < 0.95){ game.items.bran++; logEvent("🎁 Rồng cướp được Cám (+3% Xâm chiếm)!"); }
-            else { game.items.cake++; logEvent("🎁 TUYỆT VỜI! Rồng ăn trộm được Bánh (+5% Xâm chiếm)!"); }
+            if(r < 0.2) log("Rồng chỉ mang về... không khí.");
+            else if(r < 0.5) { game.items.stone++; log("Nhận Cát đá!"); }
+            else if(r < 0.75) { game.items.lemon++; log("Nhận Chanh!"); }
+            else if(r < 0.9) { game.items.bran++; log("Nhận Cám!"); }
+            else { game.items.cake++; log("Nhận Bánh ngọt!"); }
             updateUI();
         }, 10000);
     }
 
-    // Sử dụng vật phẩm
-    function useItem(type) {
-        if(game.items[type] > 0) {
-            game.items[type]--;
-            if(type === 'stone') game.bonusInvasionRate += 1;
-            if(type === 'lemon') game.bonusInvasionRate += 2;
-            if(type === 'bran') game.bonusInvasionRate += 3;
-            if(type === 'cake') game.bonusInvasionRate += 5;
-            logEvent("Đã cho ong ăn, tăng tỷ lệ xâm chiếm!");
+    function useItem(t) {
+        if(game.items[t] > 0) {
+            game.items[t]--;
+            let b = {stone:1, lemon:2, bran:3, cake:5};
+            game.bonusWin += b[t];
+            log("Sử dụng vật phẩm buff thành công!");
             updateUI();
         }
     }
 
-    // Xâm chiếm
     function invadeOtherNest() {
-        if(game.bees.fighter < 2) return;
         game.isBusy = true; updateUI();
-        logEvent("⚔️ Đang mang quân đi xâm chiếm tổ khác...");
-        
+        log("⚔️ Đang đi đánh chiếm...");
         setTimeout(() => {
             game.isBusy = false;
-            let baseWinRate = 40 + (game.bees.dragon * 10);
-            let totalWinRate = Math.min(100, baseWinRate + game.bonusInvasionRate) / 100;
-            
-            if(Math.random() < totalWinRate) {
-                let loot = 2000 + (game.bees.fighter * 800); game.money += loot;
-                game.bonusInvasionRate = 0; // Reset bonus sau khi đánh
-                logEvent(`🏆 XÂM CHIẾM THẮNG LỢI! Cướp được ${Math.floor(loot)}$. (Đã reset buff)`);
+            let winRate = (40 + game.bonusWin + (game.bees.dragon * 10)) / 100;
+            if(Math.random() < winRate) {
+                let m = 2500 + (game.bees.fighter * 500); game.money += m;
+                log(`THẮNG! Cướp được ${m}$.`);
             } else {
                 game.bees.fighter = Math.max(0, game.bees.fighter - 1);
-                game.bonusInvasionRate = 0;
-                logEvent("💀 Bị phục kích! Mất 1 Ong Chiến và toàn bộ Buff.");
+                log("THUA! Mất 1 Ong Chiến.");
             }
-            updateUI();
+            game.bonusWin = 0; updateUI();
         }, 3000);
     }
 
-    // PvP Giả lập (Solo)
     function startPvP() {
-        if(game.bees.queen < 3) return;
         game.isBusy = true; updateUI();
-        logEvent("🌐 Đang tìm kiếm đối thủ trong Đấu Trường...");
-        
+        log("🌐 Đang tìm đối thủ...");
         setTimeout(() => {
-            let myPower = game.bees.worker*1 + game.bees.fighter*5 + game.bees.queen*20 + game.bees.bully*15 + game.bees.dragon*100;
-            let enemyPower = myPower * (Math.random() * 0.6 + 0.7); // Kẻ thù sức mạnh 70% đến 130%
-            logEvent(`⚔️ Tìm thấy đối thủ! Lực chiến Địch: ${Math.floor(enemyPower)} vs Bạn: ${Math.floor(myPower)}`);
-            
+            let myP = game.bees.worker + game.bees.fighter*5 + game.bees.queen*20 + game.bees.dragon*100;
+            let enP = myP * (Math.random() + 0.5);
+            log(`Solo! Lực chiến Bạn: ${myP} - Địch: ${Math.floor(enP)}`);
             setTimeout(() => {
                 game.isBusy = false;
-                if(myPower > enemyPower) {
-                    let reward = enemyPower * 100; game.money += reward;
-                    logEvent(`🏆 BẠN ĐÃ CHIẾN THẮNG TRONG ĐẤU TRƯỜNG! Nhận ${Math.floor(reward)}$`);
-                } else {
-                    game.honey = Math.max(0, game.honey - 1000);
-                    logEvent("💔 BẠN ĐÃ THUA TRONG ĐẤU TRƯỜNG! Bị cướp mất 1000 Mật ong.");
-                }
+                if(myP > enP) { game.money += 15000; log("THẮNG ĐẤU TRƯỜNG! +15k$"); }
+                else { game.honey = 0; log("THUA ĐẤU TRƯỜNG! Mất hết mật."); }
                 updateUI();
-            }, 3000);
-        }, 2000);
+            }, 2000);
+        }, 1500);
+    }
+
+    function provokeHuman() {
+        if(game.humanAttacking) return;
+        game.humanAttacking = true;
+        document.getElementById('battle-zone').style.display = 'block';
+        log("🚨 Bạn đã triệu hồi con người!");
+    }
+
+    function fightHuman() {
+        game.isBusy = true; let t = 4;
+        let cd = setInterval(() => {
+            document.getElementById('battle-timer').innerText = `Đang đánh... ${t}s`;
+            t--;
+            if(t < 0) {
+                clearInterval(cd); game.isBusy = false;
+                document.getElementById('battle-timer').innerText = "";
+                if(Math.random() < 0.4 || game.bees.dragon > 0) {
+                    game.humanAttacking = false; game.money += 2000;
+                    document.getElementById('battle-zone').style.display = 'none';
+                    log("Đuổi được người! +2000$");
+                } else log("Nó khỏe quá, không đuổi được!");
+                updateUI();
+            }
+        }, 1000);
     }
 
     function redeemCode() {
-        let code = document.getElementById('codeInput').value.toLowerCase();
-        if (code === "ong67") { game.bees.fighter += 2; logEvent("Code OK: +2 Ong Chiến"); } 
-        else if (code === "ezgame") { game.bees.worker += 2; logEvent("Code OK: +2 Ong Thợ"); }
-        else if (code === "bii") { game.bees.queen += 1; game.bees.fighter += 5; logEvent("Code VIP: +1 Chúa, +5 Chiến"); }
-        else { logEvent("Mã sai hoặc đã hết hạn!"); }
+        let c = document.getElementById('codeInput').value.toLowerCase();
+        if(c === "denbu") {
+            game.bees.queen += 2; game.bees.worker += 2; game.bees.fighter += 2; game.bees.bully += 2;
+            log("Đã nhận đền bù: +2 mỗi loại ong!");
+        } else if(c === "bii") {
+            game.bees.queen += 1; game.bees.fighter += 5;
+            log("Code bii: +1 Chúa, +5 Chiến.");
+        }
         document.getElementById('codeInput').value = ""; updateUI();
     }
 
-    // Vòng lặp thời gian thực
-    let penaltyCounter = 0;
     setInterval(() => {
-        if (!game.humanAttacking || game.bees.queen > 0) {
-            game.honey += (game.bees.worker * 1 + game.bees.queen * 5 + game.bees.bully * 2 + game.bees.dragon * 30) * 0.7;
+        if(!game.humanAttacking || game.bees.queen > 0) {
+            game.honey += (game.bees.worker * 0.8 + game.bees.queen * 4 + game.bees.bully * 2 + game.bees.dragon * 30) * 0.7;
         }
-        if (game.humanAttacking && !game.isFighting) {
-            game.honey = Math.max(0, game.honey - 5);
-            penaltyCounter++;
-            if (penaltyCounter >= 3) {
-                let keys = Object.keys(game.bees);
-                for(let k of keys) { if(game.bees[k] > 0) { game.bees[k]--; break; } }
-                penaltyCounter = 0;
-            }
-        }
-        // Con người ngẫu nhiên tấn công
-        if (!game.humanAttacking &&
+        if(game.humanAttacking) game.honey = Math.max(0, game.honey - 10);
+        updateUI();
+    }, 1000);
+
+    function saveGame() { localStorage.setItem("bee_war_v14", JSON.stringify(game)); alert("Lưu thành công!"); }
+    function resetGame() { if(confirm("Xóa hết?")) { localStorage.clear(); location.reload(); } }
+
+    window.onload = () => {
+        let s = JSON.parse(localStorage.getItem("bee_war_v14")) || JSON.parse(localStorage.getItem("bee_war_v13"));
+        if(s) { game = {...game, ...s}; log("Đã tải dữ liệu cũ!"); }
+        updateUI();
+    }
+</script>
+</body>
+    </html>
