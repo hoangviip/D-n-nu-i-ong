@@ -2,371 +2,261 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Bee War Tycoon v1.5 - Heain Era</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lobotomy Corp Idle</title>
     <style>
         :root {
-            --h-main: #f39c12; --h-light: #f1c40f; --h-dark: #d35400;
-            --bg: #2c1e0a; --card: #4a2f0f; --lemon: #ccff00;
+            --bg-color: #0b0e14;
+            --panel-color: #1a1f26;
+            --accent-color: #4facfe;
+            --text-color: #e0e0e0;
+            --danger-color: #ff4b2b;
         }
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: #fff; margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .game-container { width: 100%; max-width: 480px; background: var(--card); border-radius: 20px; padding: 15px; border: 2px solid var(--h-main); box-shadow: 0 0 30px #000; position: relative; }
-        .version-tag { position: absolute; top: 10px; right: 10px; font-size: 0.7rem; color: var(--h-light); background: rgba(0,0,0,0.5); padding: 2px 8px; border-radius: 10px; }
-        
-        #event-log { background: #1a1005; padding: 8px; border-radius: 10px; margin: 10px 0; font-size: 0.8rem; color: var(--h-light); height: 80px; overflow-y: auto; border: 1px solid #640; box-shadow: inset 0 0 10px #000; }
-        
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .stat-box { background: rgba(0,0,0,0.4); padding: 10px; border-radius: 12px; text-align: center; border: 1px solid #530; }
-        .val { color: var(--h-light); font-weight: bold; font-size: 1.1rem; display: block; }
-        
-        .bee-info { font-size: 0.85rem; background: #321; padding: 10px; border-radius: 10px; margin-bottom: 10px; border-left: 4px solid var(--h-main); }
-        .lemon-status { color: var(--lemon); font-weight: bold; display: none; margin-top: 5px; animation: flash 2s infinite; }
-        @keyframes flash { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        #human-alert { display: none; background: #c0392b; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 10px; border: 2px solid white; animation: shake 0.5s infinite; }
-        @keyframes shake { 0% { transform: translate(1px, 1px); } 20% { transform: translate(-1px, -2px); } 100% { transform: translate(1px, -1px); } }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
 
-        button { width: 100%; padding: 14px; margin: 4px 0; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; color: white; font-size: 1rem; transition: 0.2s; text-shadow: 1px 1px 2px #000; }
-        button:active { transform: scale(0.96); }
-        button:disabled { opacity: 0.4; filter: grayscale(1); cursor: not-allowed; }
+        header {
+            background: #000;
+            width: 100%;
+            padding: 10px 0;
+            text-align: center;
+            border-bottom: 2px solid var(--accent-color);
+            box-shadow: 0 0 15px var(--accent-color);
+        }
 
-        .btn-honey { background: linear-gradient(var(--h-light), var(--h-main)); color: #310; position: relative; overflow: hidden; }
-        .btn-sell { background: #2ecc71; }
-        .btn-random { background: #3498db; }
-        .btn-evo { background: #9b59b6; }
-        .btn-pvp { background: linear-gradient(45deg, #ff4d4d, #ff0000); }
-        .btn-mission { background: #16a085; }
-        .btn-feed { background: #e67e22; display: none; }
-        
-        .cd-bar { position: absolute; bottom: 0; left: 0; height: 4px; background: rgba(0,0,0,0.6); width: 0%; }
-        .inv-box { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 10px; margin: 10px 0; font-size: 0.8rem; border: 1px dashed var(--h-main); }
-        .item { display: inline-block; background: #530; padding: 4px 8px; margin: 2px; border-radius: 5px; cursor: pointer; }
+        .game-container {
+            display: flex;
+            width: 95%;
+            max-width: 1200px;
+            height: 80vh;
+            margin-top: 20px;
+            gap: 20px;
+        }
+
+        .panel {
+            background: var(--panel-color);
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-y: auto;
+        }
+
+        /* Thống kê */
+        #stats-panel { flex: 1; }
+        .stat-box { font-size: 1.2em; margin-bottom: 10px; color: #00ffcc; }
+
+        /* Khu vực làm việc */
+        #work-panel { flex: 2; display: flex; flex-direction: column; gap: 15px; }
+        .abnormality-card {
+            background: #252a33;
+            padding: 15px;
+            border-left: 5px solid var(--accent-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Nâng cấp */
+        #shop-panel { flex: 1; }
+
+        button {
+            background: #333;
+            color: white;
+            border: 1px solid var(--accent-color);
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover:not(:disabled) {
+            background: var(--accent-color);
+            color: black;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #111;
+            margin-top: 5px;
+            border-radius: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-color);
+            width: 0%;
+            transition: width 0.1s linear;
+        }
+
+        h3 { margin-top: 0; border-bottom: 1px solid #444; padding-bottom: 5px; }
     </style>
 </head>
 <body>
 
+<header>
+    <h1>LOBOTOMY CORP IDLE</h1>
+</header>
+
 <div class="game-container">
-    <div class="version-tag">v1.5 - Lemon Era</div>
-    <h2 style="text-align:center; color: var(--h-light); margin: 5px 0;">🍯 BEE WAR TYCOON</h2>
-    
-    <div id="event-log">Hệ thống: Chào mừng v1.5! Đã thêm Ong Lemon và PvP cướp bóc.</div>
-
-    <div id="human-alert">
-        <strong id="human-title">CẢNH BÁO: NGƯỜI ĐANG PHÁ!</strong><br>
-        <div id="human-timer" style="font-size: 1.5rem; margin: 5px 0;">4s</div>
-        <button style="background:white; color:red; padding:8px;" onclick="fightHuman()">PHẢN CÔNG GẤP!</button>
+    <div id="stats-panel" class="panel">
+        <h3>Quản lý Năng lượng</h3>
+        <div class="stat-box">PE Boxes: <span id="pe-count">0</span></div>
+        <div class="stat-box">Nhân viên: <span id="staff-count">1</span></div>
+        <div style="font-size: 0.9em; color: #888;">
+            Tự động tạo: <span id="auto-rate">0</span> PE/giây
+        </div>
     </div>
 
-    <div class="stats-grid">
-        <div class="stat-box">Mật: <span id="honey" class="val">0</span></div>
-        <div class="stat-box">Tiền: <span id="money" class="val">0</span></div>
+    <div id="work-panel" class="panel">
+        <h3>Phòng Chứa Dị Thể</h3>
+        <div id="abnormality-list">
+            <div class="abnormality-card">
+                <div>
+                    <strong>Một ngày nọ (ZAYIN)</strong><br>
+                    <small>Công việc: Bản năng</small>
+                    <div class="progress-bar"><div id="bar-0" class="progress-fill"></div></div>
+                </div>
+                <button onclick="work(0)">Làm việc</button>
+            </div>
+        </div>
     </div>
 
-    <div class="bee-info">
-        <div id="beeList">Thợ: 0 | Chiến: 0 | Chúa: 0 | Bully: 0 | 🐉 RỒNG: 0</div>
-        <div id="lemonDisplay" class="lemon-status">🍋 ONG LEMON: <span id="lemonCount">0</span> (Đang bảo vệ tổ)</div>
-    </div>
-
-    <div class="inv-box" id="invDisplay" style="display:none">
-        <strong>Túi đồ (Buff thắng: +<span id="bonusTxt">0</span>%)</strong><br>
-        <div id="items-list"></div>
-    </div>
-
-    <button class="btn-honey" id="btn-collect" onclick="collectHoney()">ĐI LẤY MẬT (3s) <div class="cd-bar" id="bar"></div></button>
-    <button class="btn-sell" onclick="sellHoney()">BÁN MẬT (-30%)</button>
-    
-    <div style="display:flex; gap:5px;">
-        <button class="btn-mission" id="btn-find" onclick="findHoneyMission()">TÌM MẬT (10s)</button>
-        <button style="background:#27ae60" id="btn-adv" onclick="adventure()">CƯỠI RỒNG (10s)</button>
-    </div>
-
-    <button class="btn-feed" id="btn-feed" onclick="feedBi()">🍴 CHO BI ĂN (Cần 5 Bully)</button>
-    <button class="btn-evo" id="btn-evo" onclick="evolve()">TIẾN HÓA RỒNG (5s - 2 Chúa)</button>
-    <button class="btn-pvp" id="btn-pvp" onclick="multiplayerPvP()">PvP CƯỚP CHÚA (3 Chúa)</button>
-
-    <div style="text-align:center; margin:8px 0; font-weight:bold; color:var(--h-light); font-size:0.9rem;" id="roll-res">---</div>
-    <button class="btn-random" id="btn-roll" onclick="roll()">RANDOM ONG (<span id="cost">1000</span>$)</button>
-
-    <div style="display:flex; gap:5px; margin-top:10px;">
-        <input type="text" id="codeIn" placeholder="Nhập mã code..." style="flex:1; padding:12px; border-radius:10px; border:1px solid #640; background:#1a1005; color:white;">
-        <button style="width:80px; background:var(--h-dark); margin:0;" onclick="checkCode()">NHẬP</button>
-    </div>
-
-    <div style="display:flex; gap:4px; margin-top:15px;">
-        <button style="background:#555; font-size:0.7rem; padding:8px;" onclick="save()">💾 LƯU</button>
-        <button style="background:#555; font-size:0.7rem; padding:8px;" onclick="fix()">🛠 FIX</button>
-        <button style="background:#a93226; font-size:0.7rem; padding:8px;" onclick="clearAll()">🗑 XÓA</button>
+    <div id="shop-panel" class="panel">
+        <h3>Văn phòng Cải tiến</h3>
+        <button onclick="hireStaff()" id="btn-staff">Thuê nhân viên (10 PE)</button>
+        <hr>
+        <button onclick="unlockAbnormality()" id="btn-unlock">Mở khóa Dị thể mới (50 PE)</button>
+        <hr>
+        <button onclick="upgradeEgo()" id="btn-ego">Nâng cấp E.G.O (100 PE)</button>
     </div>
 </div>
 
 <script>
-    var game = {
-        honey: 0, money: 0, cost: 1000,
-        worker: 0, fighter: 0, queen: 0, bully: 0, dragon: 0, lemon: 0,
-        stone: 0, lemonItem: 0, bran: 0, cake: 0,
-        bonus: 0, fails: 0, busy: false, attacking: false, pvpCD: false
+    // Dữ liệu Game
+    let gameState = {
+        peBoxes: 0,
+        staff: 1,
+        egoLevel: 1,
+        unlockedCount: 1
     };
 
-    function log(m) {
-        var e = document.getElementById('event-log');
-        e.innerHTML = "> " + m + "<br>" + e.innerHTML;
-    }
+    const abnormalities = [
+        { name: "Một ngày nọ", rank: "ZAYIN", reward: 1, speed: 2000 },
+        { name: "Cỗ máy ca hát", rank: "HE", reward: 5, speed: 4000 },
+        { name: "Chú bé rụt rè", rank: "TETH", reward: 12, speed: 6000 },
+        { name: "Xác chết trôi", rank: "WAW", reward: 30, speed: 10000 },
+        { name: "Không có gì", rank: "ALEPH", reward: 100, speed: 20000 }
+    ];
 
-    function update() {
-        document.getElementById('honey').innerText = Math.floor(game.honey);
-        document.getElementById('money').innerText = Math.floor(game.money);
-        document.getElementById('cost').innerText = Math.floor(game.cost);
-        document.getElementById('beeList').innerText = "Thợ: "+game.worker+" | Chiến: "+game.fighter+" | Chúa: "+game.queen+" | Bully: "+game.bully+" | 🐉 RỒNG: "+game.dragon;
+    // Hàm cập nhật giao diện
+    function updateUI() {
+        document.getElementById('pe-count').innerText = Math.floor(gameState.peBoxes);
+        document.getElementById('staff-count').innerText = gameState.staff;
         
-        // Hiển thị Lemon Bee
-        if(game.lemon > 0) {
-            document.getElementById('lemonDisplay').style.display = "block";
-            document.getElementById('lemonCount').innerText = game.lemon;
-        }
+        let rate = (gameState.staff - 1) * 0.5;
+        document.getElementById('auto-rate').innerText = rate.toFixed(1);
 
-        // Túi đồ
-        var hasItem = (game.stone + game.lemonItem + game.bran + game.cake) > 0;
-        document.getElementById('invDisplay').style.display = (hasItem || game.bonus > 0) ? "block" : "none";
-        document.getElementById('bonusTxt').innerText = game.bonus;
-        var itHtml = "";
-        if(game.stone > 0) itHtml += '<div class="item" onclick="use(\'stone\')">Cát ('+game.stone+')</div>';
-        if(game.lemonItem > 0) itHtml += '<div class="item" onclick="use(\'lemonItem\')">Chanh ('+game.lemonItem+')</div>';
-        if(game.bran > 0) itHtml += '<div class="item" onclick="use(\'bran\')">Cám ('+game.bran+')</div>';
-        if(game.cake > 0) itHtml += '<div class="item" onclick="use(\'cake\')">Bánh ('+game.cake+')</div>';
-        document.getElementById('items-list').innerHTML = itHtml;
-
-        // Hiện nút
-        document.getElementById('btn-feed').style.display = game.bully >= 5 ? "block" : "none";
-        document.getElementById('btn-evo').style.display = game.queen >= 2 ? "block" : "none";
-        document.getElementById('btn-pvp').style.display = game.queen >= 3 ? "block" : "none";
-        document.getElementById('human-alert').style.display = game.attacking ? "block" : "none";
-        document.getElementById('btn-adv').style.display = game.dragon >= 1 ? "block" : "none";
-
-        // Disable buttons
-        var b = game.busy;
-        document.getElementById('btn-collect').disabled = b;
-        document.getElementById('btn-roll').disabled = b || game.money < game.cost;
-        document.getElementById('btn-find').disabled = b || game.queen < 1;
-        document.getElementById('btn-pvp').disabled = b || game.pvpCD;
+        // Cập nhật trạng thái nút bấm
+        document.getElementById('btn-staff').disabled = gameState.peBoxes < 10 * gameState.staff;
+        document.getElementById('btn-unlock').disabled = gameState.peBoxes < 50 * gameState.unlockedCount || gameState.unlockedCount >= abnormalities.length;
+        document.getElementById('btn-ego').disabled = gameState.peBoxes < 100 * gameState.egoLevel;
     }
 
-    // --- CHỨC NĂNG CŨ ---
-    function collectHoney() {
-        if(game.busy) return;
-        game.busy = true; update();
-        var bar = document.getElementById('bar'); bar.style.width = "0%";
-        setTimeout(function(){ bar.style.transition = "width 3s linear"; bar.style.width = "100%"; }, 50);
-        setTimeout(function(){
-            var get = 10 + (game.worker * 3); game.honey += get;
-            game.busy = false; bar.style.transition = "none"; bar.style.width = "0%";
-            log("Lấy được " + get + " mật."); update();
-        }, 3050);
-    }
+    // Hàm làm việc thủ công
+    function work(index) {
+        const bar = document.getElementById(`bar-${index}`);
+        const btn = event.target;
+        btn.disabled = true;
 
-    function sellHoney() {
-        var m = (game.honey * 0.5) * 0.7; game.money += m; game.honey = 0;
-        log("Bán mật thu được " + Math.floor(m) + "$"); update();
-    }
+        let start = null;
+        const duration = abnormalities[index].speed / gameState.egoLevel;
 
-    function roll() {
-        if(game.money < game.cost || game.busy) return;
-        game.money -= game.cost; game.cost *= 1.4;
-        game.busy = true; update();
-        document.getElementById('roll-res').innerText = "Đang tìm ong...";
-        setTimeout(function(){
-            var r = Math.random() * 100, name = "";
-            if(r < 57) { game.worker++; name="Ong Thợ"; }
-            else if(r < 77) { game.fighter++; name="Ong Chiến"; }
-            else if(r < 90) { game.queen++; name="Ong Chúa"; }
-            else { game.bully++; name="Ong Bully"; }
-            document.getElementById('roll-res').innerText = "Nhận được: " + name;
-            log("Random ra 1 " + name);
-            game.busy = false; update();
-        }, 800);
-    }
+        function animate(timestamp) {
+            if (!start) start = timestamp;
+            let progress = timestamp - start;
+            let percent = Math.min((progress / duration) * 100, 100);
+            bar.style.width = percent + "%";
 
-    // --- CHỨC NĂNG MỚI v1.5 ---
-
-    // PvP Multiplayer (Giả lập Online)
-    function multiplayerPvP() {
-        if(game.queen < 3 || game.pvpCD) return;
-        game.busy = true; update();
-        log("🌐 Đang quét tìm người chơi đang online...");
-        
-        var enemies = ["Khoa_Beo_99", "Pro_Bee_VN", "Admin_Gà_Con", "Be_Chanh_Cute", "Sát_Thủ_Mật"];
-        var target = enemies[Math.floor(Math.random() * enemies.length)];
-
-        setTimeout(function(){
-            log("Đã tìm thấy: " + target + "! Bắt đầu Solo...");
-            setTimeout(function(){
-                game.busy = false; game.pvpCD = true;
-                if(Math.random() < 0.5) {
-                    game.queen++; game.worker += 2;
-                    log("🏆 THẮNG LỚN! Bạn đã cướp được 1 Ong Chúa và 2 Thợ của " + target);
-                } else {
-                    game.queen = Math.max(0, game.queen - 1);
-                    log("💔 THUA RỒI! " + target + " đã bắt mất 1 Ong Chúa của bạn.");
-                }
-                update();
-                // Cooldown 10s
-                setTimeout(function(){ game.pvpCD = false; log("Hệ thống: PvP đã sẵn sàng lại."); update(); }, 10000);
-            }, 2000);
-        }, 1500);
-    }
-
-    // Nhiệm vụ Tìm Mật
-    function findHoneyMission() {
-        if(game.queen < 1 || game.busy) return;
-        game.busy = true; log("🕵️ Ong Chúa đang đi tìm mật... (10s)"); update();
-        
-        var timer = 0;
-        var missionInterval = setInterval(function(){
-            timer += 2;
-            var r = Math.random() * 100;
-            
-            if(r < 15) { // Sự kiện xấu
-                var events = ["chết đói", "gặp ong lạ dụ dỗ", "tìm thấy bạn đời"];
-                var ev = events[Math.floor(Math.random() * events.length)];
-                if(game.worker > 0) game.worker--;
-                log("⚠️ Một Ong Thợ đã " + ev + " và rời bỏ đàn!");
-                clearInterval(missionInterval); game.busy = false; log("❌ Nhiệm vụ kết thúc sớm."); update();
-            } 
-            else if(r < 25) { // Gà 67
-                log("🐓 Gặp Gà 67! Gà đang rặn đẻ...");
-                if(Math.random() < 0.09) { game.dragon++; log("🔥 SIÊU CẤP! Gà đẻ ra 1 Rồng Ong!"); }
-                else { log("Gà chỉ đẻ ra... phân."); }
-            }
-            else if(r < 26) { // Lemon Bee (1%)
-                if(game.lemon === 0) {
-                    game.lemon = 1; log("🍋 HUYỀN THOẠI! Bạn đã thu phục được Ong Lemon!");
-                } else { game.lemon++; log("🍋 Bạn tìm thêm được 1 Ong Lemon!"); }
-            }
-            else if(r < 50) { // Đồ rồng
-                var items = ["stone", "lemonItem", "bran", "cake"];
-                var it = items[Math.floor(Math.random() * items.length)];
-                game[it]++; log("🎁 Tìm thấy phụ kiện cho Rồng!");
-            }
-            else { log("... Ong vẫn đang bay tìm kiếm ..."); }
-
-            if(timer >= 10) { 
-                clearInterval(missionInterval); game.busy = false; 
-                log("✅ Nhiệm vụ hoàn thành an toàn."); update(); 
-            }
-            update();
-        }, 2000);
-    }
-
-    // Con người xâm chiếm 4s
-    function fightHuman() {
-        // Nếu có Lemon Bee thì không cần làm gì, nó tự bảo vệ
-        if(game.lemon > 0) { log("🍋 Ong Lemon dùng MEMS Chanh phản đòn! Con người đã chạy mất."); return; }
-        
-        game.busy = true;
-        log("Đang chiến đấu bảo vệ tổ...");
-        setTimeout(function(){
-            game.busy = false; game.attacking = false;
-            if(Math.random() < 0.5 || game.dragon > 0) {
-                game.money += 5000; log("Đã đuổi được người! +5000$");
+            if (progress < duration) {
+                requestAnimationFrame(animate);
             } else {
-                game.worker = Math.max(0, game.worker - 2);
-                log("Thất bại! Con người đã bắt mất 2 Ong Thợ.");
+                gameState.peBoxes += abnormalities[index].reward;
+                bar.style.width = "0%";
+                btn.disabled = false;
+                updateUI();
             }
-            update();
-        }, 1500);
-    }
-
-    function startHumanInvasion() {
-        if(game.lemon > 0) return; // Lemon bee chặn đứng
-        game.attacking = true;
-        var time = 4;
-        var hTimer = setInterval(function(){
-            document.getElementById('human-timer').innerText = time + "s";
-            time--;
-            if(time < 0 || !game.attacking) {
-                clearInterval(hTimer);
-                if(game.attacking) { // Hết thời gian mà không bấm
-                    game.attacking = false;
-                    game.honey = Math.max(0, game.honey - 500);
-                    log("😱 Hết thời gian! Con người đã cướp mất 500 Mật.");
-                    update();
-                }
-            }
-        }, 1000);
-        update();
-    }
-
-    // Code đền bù và Admin
-    function checkCode() {
-        var c = document.getElementById('codeIn').value.toLowerCase();
-        if(c === "adminn") {
-            game.honey += 99999; game.money += 99999999;
-            game.worker += 1000; game.fighter += 1000; game.queen += 1000; game.bully += 1000; game.dragon += 1000;
-            log("👑 QUYỀN NĂNG ADMIN ĐÃ BẬT!");
-        } 
-        else if(c === "ilovefemboi") {
-            game.dragon++; game.bully++;
-            log("🎁 Code Quà Tặng: +1 Rồng, +1 Bully");
         }
-        else if(c === "denbu") {
-            game.queen += 2; game.worker += 2; game.fighter += 2; game.bully += 2;
-            log("Đã nhận đền bù!");
+        requestAnimationFrame(animate);
+    }
+
+    // Thuê nhân viên (Tạo PE Box tự động)
+    function hireStaff() {
+        let cost = 10 * gameState.staff;
+        if (gameState.peBoxes >= cost) {
+            gameState.peBoxes -= cost;
+            gameState.staff++;
+            updateUI();
         }
-        document.getElementById('codeIn').value = ""; update();
     }
 
-    function feedBi() {
-        if(game.bully < 5) return;
-        log("🍲 Bạn đã cho Bi ăn. Bi cảm thấy rất vui và tặng bạn 5000$.");
-        game.money += 5000; update();
-    }
-
-    // Các hàm cũ khác
-    function evolve() {
-        if(game.queen < 2 || game.busy) return;
-        game.busy = true; log("🔮 Đang tiến hóa... (5s)"); update();
-        setTimeout(function(){
-            game.busy = false;
-            if(Math.random() < 0.15) { game.queen -= 2; game.dragon++; log("🎉 THÀNH CÔNG!"); }
-            else { game.fails++; log("❌ Hụt! ("+game.fails+"/3)"); if(game.fails>=3){game.fails=0; if(game.dragon>0)game.dragon--;}}
-            update();
-        }, 5000);
-    }
-    function use(t) { if(game[t] > 0) { game[t]--; var b = {stone:1, lemonItem:2, bran:3, cake:5}; game.bonus += b[t]; update(); } }
-    function adventure() {
-        if(game.dragon < 1 || game.busy) return;
-        game.busy = true; log("🐉 Rồng bay đi... (10s)"); update();
-        setTimeout(function(){ game.busy = false; var r = Math.random(); if(r<0.5) game.stone++; else game.bran++; update(); }, 10000);
-    }
-
-    // Vòng lặp
-    setInterval(function(){
-        if(!game.attacking) {
-            game.honey += (game.worker*0.5 + game.queen*5 + game.bully*2 + game.dragon*40 + game.lemon*100) * 0.7;
+    // Mở khóa dị thể mới
+    function unlockAbnormality() {
+        let cost = 50 * gameState.unlockedCount;
+        if (gameState.peBoxes >= cost && gameState.unlockedCount < abnormalities.length) {
+            gameState.peBoxes -= cost;
+            const data = abnormalities[gameState.unlockedCount];
+            const html = `
+                <div class="abnormality-card">
+                    <div>
+                        <strong>${data.name} (${data.rank})</strong><br>
+                        <small>Công việc: Thấu hiểu</small>
+                        <div class="progress-bar"><div id="bar-${gameState.unlockedCount}" class="progress-fill"></div></div>
+                    </div>
+                    <button onclick="work(${gameState.unlockedCount})">Làm việc</button>
+                </div>
+            `;
+            document.getElementById('abnormality-list').innerHTML += html;
+            gameState.unlockedCount++;
+            updateUI();
         }
-        if(!game.attacking && game.worker > 5 && Math.random() < 0.03) {
-            startHumanInvasion();
-        }
-        update();
-    }, 1000);
-
-    // Lemon Bee nói "Ilovefemboi" mỗi 1 phút
-    setInterval(function(){
-        if(game.lemon > 0) { log("🍋 Ong Lemon: Ilovefemboi"); }
-    }, 60000);
-
-    function save() { localStorage.setItem("bee_v15", JSON.stringify(game)); alert("Đã lưu!"); }
-    function fix() { game.busy = false; game.attacking = false; update(); log("Đã sửa kẹt nút!"); }
-    function clearAll() { if(confirm("Xóa hết?")) { localStorage.clear(); location.reload(); } }
-
-    window.onload = function() {
-        var s = localStorage.getItem("bee_v15") || localStorage.getItem("bee_v14") || localStorage.getItem("bee_war_v14") || localStorage.getItem("bee_war_v13");
-        if(s) {
-            var data = JSON.parse(s);
-            for(var key in data) { game[key] = data[key]; }
-            log("Tải dữ liệu thành công!");
-        }
-        update();
     }
+
+    // Nâng cấp E.G.O (Tăng tốc độ làm việc)
+    function upgradeEgo() {
+        let cost = 100 * gameState.egoLevel;
+        if (gameState.peBoxes >= cost) {
+            gameState.peBoxes -= cost;
+            gameState.egoLevel += 0.5;
+            updateUI();
+        }
+    }
+
+    // Vòng lặp Idle (0.5 PE mỗi giây cho mỗi nhân viên thêm)
+    setInterval(() => {
+        if (gameState.staff > 1) {
+            gameState.peBoxes += (gameState.staff - 1) * 0.1; // Chạy mỗi 100ms
+            updateUI();
+        }
+    }, 100);
+
+    // Khởi tạo
+    updateUI();
 </script>
+
 </body>
-        </html>
+</html>
